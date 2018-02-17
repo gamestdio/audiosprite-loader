@@ -16,19 +16,19 @@ npm install audiosprite-loader
 **`webpack.config.js`**
 
 ```javascript
-const AudioSpritePlugin = require("audiosprite-loader");
+const AudioSprite = require("audiosprite-loader");
 
 module.exports = {
     module: {
         loaders: [
             {
               test: /\.(wav|mp3)$/,
-              loader: AudioSpritePlugin.loader()
+              loader: AudioSprite.loader()
             }
         ]
     },
     plugins: [
-        new AudioSpritePlugin()
+        new AudioSprite.Plugin()
     ]
 }
 ```
