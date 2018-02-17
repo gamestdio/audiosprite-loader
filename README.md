@@ -2,15 +2,8 @@
 
 Audio Sprite loader for Webpack. This loader currently only supports [howler.js](https://github.com/goldfire/howler.js/) format. It should be pretty easy to support other audio libraries though.
 
-## Dependencies
-
-You'll need `ffmpeg` installed.
-
-**OSX**
-
-```
-brew install ffmpeg --with-theora --with-libvorbis
-```
+- [Usage](#usage)
+- [Dependencies](#dependencies)
 
 ## Usage
 
@@ -45,6 +38,16 @@ module.exports = {
 ```javascript
 const audio = require("./audio/file.wav");
 audio.play();
+```
+
+## Dependencies
+
+You'll need `ffmpeg` installed.
+
+**OSX**
+
+```
+brew install ffmpeg --with-theora --with-libvorbis
 ```
 
 ## License
