@@ -14,10 +14,16 @@ brew install ffmpeg --with-theora --with-libvorbis
 
 ## Usage
 
+Install the loader.
+
+```
+npm install audiosprite-loader
+```
+
 **`webpack.config.js`**
 
 ```javascript
-const AudioSpritePlugin = require("webpack-audiosprite-plugin");
+const AudioSpritePlugin = require("audiosprite-loader");
 
 module.exports = {
     module: {
