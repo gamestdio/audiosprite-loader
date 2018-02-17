@@ -1,3 +1,5 @@
+require('./child.js');
+
 const beep = require("./audio/beep.mp3");
 const boop = require("./audio/boop.wav");
 

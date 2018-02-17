@@ -9,11 +9,11 @@ module.exports = function (content: Buffer, map: any, meta: any) {
 
     Plugin.onReady((data) => {
         callback(null, `const Howl = require("howler").Howl;
-window.$_audiosprite = window.$_audiosprite || new Howl(${data});
+window.$_audiosprite = window.$_audiosprite || new Howl(${ data });
 
 module.exports = {
   play: function () {
-    window.$_audiosprite.play("${ soundId }");
+    return window.$_audiosprite.play("${ soundId }");
   }
 }`);
     });

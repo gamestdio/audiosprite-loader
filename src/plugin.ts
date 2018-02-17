@@ -1,4 +1,5 @@
 import * as audiosprite from "audiosprite";
+import * as fs from "fs";
 
 export class Plugin {
     options: any;
@@ -12,7 +13,7 @@ export class Plugin {
 
     constructor (options: any = {}) {
         if (!options.format) {
-            options.format = "howler";
+            options.format = "howler2";
         }
 
         if (!options.output) {
@@ -37,28 +38,39 @@ export class Plugin {
                 audiosprite(Object.keys(Plugin.FILES), this.options, (err, result) => {
                     if (err) return console.error(err)
 
-                    // howler 2.x
-                    let json: any = result;
-                    json.src = json.urls;
-
-                    const data = JSON.stringify(json);
-
+                    const data = JSON.stringify(result);
                     Plugin.onReadyCallbacks.map(callback => callback(data));
 
-                    next();
+                    // read and add audio files as compilation assets
+                    // generated files will be removed from the filesystem
+                    Promise.all([
+                        this.addCompilationAsset(compilation, `${this.options.output}.ac3`),
+                        this.addCompilationAsset(compilation, `${this.options.output}.m4a`),
+                        this.addCompilationAsset(compilation, `${this.options.output}.mp3`),
+                        this.addCompilationAsset(compilation, `${this.options.output}.ogg`)
+                    ]).then(() => next());
                 });
 
             } else {
                 next();
             }
         });
+    }
 
-       // compiler.plugin("emit", (compilation, callback) => {
-       //     callback();
-       // });
+    addCompilationAsset (compilation, filename: string) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(filename, (err, buffer) => {
+                if (err) console.error(err);
 
-        compiler.plugin('done', () => {
-            // console.log('Plugin: done');
+                compilation.assets[filename] = {
+                    source: () => buffer,
+                    size: () => buffer.length
+                };
+
+                fs.unlink(filename, (err) => { if (err) console.log(err) });
+
+                resolve();
+            });
         });
     }
 
@@ -66,7 +78,6 @@ export class Plugin {
         return assets.js.length && assets.js.every(name => {
             return /\.hot-update\.js$/.test(name);
         });
-    };
-
+    }
 
 }
