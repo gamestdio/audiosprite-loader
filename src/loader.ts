@@ -1,5 +1,4 @@
 import * as path from "path";
-
 import { Plugin } from "./plugin"
 
 module.exports = function (content: Buffer, map: any, meta: any) {
@@ -9,19 +8,15 @@ module.exports = function (content: Buffer, map: any, meta: any) {
     Plugin.FILES[ this.resourcePath ] = true;
 
     Plugin.onReady((data) => {
-        const str = `
-const Howl = require("howler").Howl;
-
+        callback(null, `const Howl = require("howler").Howl;
 window.$_audiosprite = window.$_audiosprite || new Howl(${data});
 
 module.exports = {
   play: function () {
     window.$_audiosprite.play("${ soundId }");
   }
-}`;
-
-        callback(null, str);
-    })
+}`);
+    });
 
 }
 
