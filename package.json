@@ -1,6 +1,6 @@
 {
   "name": "audiosprite-loader",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Audio Sprite Loader and Plugin for Webpack",
   "main": "lib/index.js",
   "scripts": {

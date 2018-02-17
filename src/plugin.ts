@@ -1,10 +1,35 @@
 import * as audiosprite from "audiosprite";
 import * as fs from "fs";
 
+export class Deferred {
+    promise: Promise<any>;
+
+    reject: Function;
+    resolve: Function;
+
+    constructor() {
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
+
+    then (func: (value: any) => any) {
+        return this.promise.then(func);
+    }
+
+    catch (func: (value: any) => any) {
+        return this.promise.catch(func);
+    }
+}
+
 export class Plugin {
     options: any;
+    files: string[] = [];
 
-    static FILES = {};
+    generateTimeout: any;
+    generateDeferred: Deferred;
+
     static onReadyCallbacks = [];
 
     static onReady (callback) {
@@ -26,35 +51,47 @@ export class Plugin {
     apply (compiler) {
         // Setup callback for accessing a compilation:
         compiler.plugin("compilation", (compilation) => {
-            Plugin.FILES = {}
+            this.files = [];
+            this.generateDeferred = new Deferred();
+            this.generateDeferred.then((data) => {
+                Plugin.onReadyCallbacks.map(callback => callback(data));
+            });
+
             Plugin.onReadyCallbacks = [];
+
+            compilation.plugin("normal-module-loader", (context, module) => {
+                if (
+                    module.loaders &&
+                    module.loaders.filter(l => l.loader.indexOf("audiosprite-loader/lib/loader.js") >= 0).length > 0
+                ) {
+                    this.enqueueFileForGeneration(compilation, module.userRequest, 100);
+                }
+            });
         });
+    }
 
-        let compiled = false;
-        compiler.plugin("after-compile", (compilation, next) => {
-            if (!compiled) {
-                compiled = true;
+    enqueueFileForGeneration (compilation, filename, accumulateInterval) {
+        if (this.generateTimeout) clearTimeout(this.generateTimeout);
 
-                audiosprite(Object.keys(Plugin.FILES), this.options, (err, result) => {
-                    if (err) return console.error(err)
+        this.files.push(filename);
 
-                    const data = JSON.stringify(result);
-                    Plugin.onReadyCallbacks.map(callback => callback(data));
+        this.generateTimeout = setTimeout(() => {
+            audiosprite(this.files, this.options, (err, result) => {
+                if (err) return console.error(err)
 
-                    // read and add audio files as compilation assets
-                    // generated files will be removed from the filesystem
-                    Promise.all([
-                        this.addCompilationAsset(compilation, `${this.options.output}.ac3`),
-                        this.addCompilationAsset(compilation, `${this.options.output}.m4a`),
-                        this.addCompilationAsset(compilation, `${this.options.output}.mp3`),
-                        this.addCompilationAsset(compilation, `${this.options.output}.ogg`)
-                    ]).then(() => next());
+                // read and add audio files as compilation assets
+                // generated files will be removed from the filesystem
+                Promise.all([
+                    this.addCompilationAsset(compilation, `${this.options.output}.mp3`),
+                    this.addCompilationAsset(compilation, `${this.options.output}.ogg`),
+                    this.addCompilationAsset(compilation, `${this.options.output}.ac3`),
+                    this.addCompilationAsset(compilation, `${this.options.output}.m4a`),
+
+                ]).then(() => {
+                    this.generateDeferred.resolve(JSON.stringify(result))
                 });
-
-            } else {
-                next();
-            }
-        });
+            });
+        }, accumulateInterval);
     }
 
     addCompilationAsset (compilation, filename: string) {
