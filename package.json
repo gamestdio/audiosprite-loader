@@ -1,0 +1,41 @@
+{
+  "name": "audiosprite-loader",
+  "version": "0.1.0",
+  "description": "Audio Sprite Loader and Plugin for Webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gamestdio/audiosprite-loader.git"
+  },
+  "keywords": [
+    "audiosprite",
+    "webpack",
+    "loader",
+    "webpack-loader"
+  ],
+  "author": "Endel Dreyer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gamestdio/audiosprite-loader/issues"
+  },
+  "homepage": "https://github.com/gamestdio/audiosprite-loader#readme",
+  "dependencies": {
+    "audiosprite": "^0.7.0"
+  },
+  "peerDependencies": {
+    "howler": "^2.0.9"
+  },
+  "devDependencies": {
+    "@types/audiosprite": "^0.6.0",
+    "@types/loader-utils": "^1.1.2",
+    "@types/webpack": "^3.8.8",
+    "howler": "^2.0.9",
+    "html-webpack-plugin": "^2.30.1",
+    "typescript": "^2.7.2",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.1"
+  }
+}
