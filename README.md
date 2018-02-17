@@ -1,5 +1,7 @@
 # Webpack Audio Sprite Loader & Plugin
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/gamestdio/audiosprite-loader.svg)](https://greenkeeper.io/)
+
 Audio Sprite loader for Webpack. This loader currently only supports [howler.js](https://github.com/goldfire/howler.js/) format. It should be pretty easy to support other audio libraries though.
 
 ## Dependencies
