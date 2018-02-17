@@ -51,7 +51,6 @@ export class Plugin {
     apply (compiler) {
         // Setup callback for accessing a compilation:
         compiler.plugin("compilation", (compilation) => {
-            this.files = [];
             this.generateDeferred = new Deferred();
             this.generateDeferred.then((data) => {
                 Plugin.onReadyCallbacks.map(callback => callback(data));
